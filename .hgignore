@@ -1,0 +1,7 @@
+syntax: glob
+*.egg-info/*
+*.pyc
+
+syntax: regexp
+^build$
+^pyenv$
