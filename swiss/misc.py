@@ -28,6 +28,7 @@ def floatify(value):
 def floatify_matrix(matrix):
     return [ [ floatify(col) for col in row ] for row in matrix ]
 
+# TODO: remove/convert to using date.FlexiDate.as_float()
 import dateutil.parser
 import datetime
 def date_to_float(date):

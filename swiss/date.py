@@ -93,7 +93,7 @@ class FlexiDate(object):
          
     def _cvt(self, val, rjust=2, force=False):
         if val:
-            tmp = str(val).strip()
+            tmp = unicode(val).strip()
             if tmp.startswith('-'):
                 tmp = '-' + tmp[1:].rjust(rjust, '0')
             else:
@@ -110,7 +110,7 @@ class FlexiDate(object):
         if self.qualifier:
             # leading space is important as ensures when no year sort in right
             # order as ' ' < '1'
-            out += ' [%s]' % self.qualifier
+            out += u' [%s]' % self.qualifier
         return out
 
     def isoformat(self, strict=False):
@@ -123,7 +123,7 @@ class FlexiDate(object):
         for val in [ self.month, self.day ]:
             if not val:
                 break
-            out += '-' + val
+            out += u'-' + val
         if strict:
             out = out.replace('?', '0')
         return out
@@ -154,6 +154,16 @@ class FlexiDate(object):
                     out.group('day'),
                     qualifier=out.group('qualifier')
                     )
+    
+    def as_float(self):
+        if not self.year: return None
+        out = float(self.year.replace('?', '0'))
+        if self.month:
+            # TODO: we are assuming months are of equal length
+            out += float(self.month.replace('?', '0')) / 12.0
+            if self.day:
+                out += float(self.day.replace('?', '0')) / 365.0
+        return out
 
 
 def parse(date):

@@ -1,4 +1,4 @@
-from pdw.date import *
+from swiss.date import *
 
 import datetime
 
@@ -63,20 +63,15 @@ class TestFlexiDate(object):
         dotest(fd)
         fd = FlexiDate(-1760, 1, 3, qualifier='fl.')
         dotest(fd)
-
-    def test_ordering(self):
-        fd1 = FlexiDate(2000, 6, 1)
-        fd2 = FlexiDate(2000)
-        assert str(fd2) < str(fd1)
-
-        fd3 = FlexiDate(1999, qualifier='c.')
-        assert str(fd3) < str(fd2)
-
-        fd4  = FlexiDate(-1000)
-        assert str(fd4) < str(fd3)
-
-        fd5 = FlexiDate(-10000)
-        # assert str(fd5) < str(fd4), '%s, %s' % (fd5, fd4)
+    
+    def test_as_float(self):
+        fd = FlexiDate(2000)
+        assert fd.as_float() == float(2000), fd.as_float()
+        fd = FlexiDate(1760, 1, 2)
+        exp = 1760 + 1/12.0 + 2/365.0
+        assert fd.as_float() == exp, fd.as_float()
+        fd = FlexiDate(-1000)
+        assert fd.as_float() == float(-1000)
 
 
 class TestDateParsers(object):
@@ -133,8 +128,6 @@ class TestDateParsers(object):
 
         fd = parse(1966)
         assert str(fd) == '1966'
-
-        
     
     def test_parse_with_qualifiers(self):
         # TODO: get this working
