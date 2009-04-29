@@ -210,7 +210,7 @@ class DateutilDateParser(DateParserBase):
         qualifier = ''
         if dateutil_parser is None:
             return None
-        date = date.strip()
+        date = orig_date = date.strip()
 
         # deal with pre 0AD dates
         if date.startswith('-') or 'BC' in date:
@@ -224,7 +224,7 @@ class DateutilDateParser(DateParserBase):
         circa_match = re.match('(.*)c\.?(\d+.*)', date)
         if circa_match:
             # remove circa bit
-            qualifier = "Note 'circa': '%s'" % date
+            qualifier = "Note 'circa': '%s'" % orig_date
             date = ''.join(circa_match.groups())
 
         # Parse the numbers intelligently
@@ -246,7 +246,7 @@ class DateutilDateParser(DateParserBase):
         # day/month then a two digit year is more likely to be this century
         # and so allow the '19' prefix to it.)
         elif len(date) == 2:
-            year = year % 100
+            year = res.year % 100
         else:
             year = res.year
 
