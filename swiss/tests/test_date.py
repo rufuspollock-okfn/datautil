@@ -128,6 +128,10 @@ class TestDateParsers(object):
 
         fd = parse(1966)
         assert str(fd) == '1966'
+
+    def test_parse_with_none(self):
+        d1 = parse(None)
+        assert d1 is None
     
     def test_parse_with_qualifiers(self):
         # TODO: get this working

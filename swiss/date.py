@@ -156,6 +156,8 @@ class FlexiDate(object):
                     )
     
     def as_float(self):
+        '''Get as a float (year being the integer part).
+        '''
         if not self.year: return None
         out = float(self.year.replace('?', '0'))
         if self.month:
