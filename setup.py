@@ -2,17 +2,17 @@ from setuptools import setup, find_packages
 
 import sys
 sys.path.insert(0, '.')
-from swiss import __version__
+from swiss import __version__, __doc__ as __long_description__
 
 setup(
-    name='Swiss Army Knife',
+    name='swiss',
     version=__version__,
     license='MIT',
     description='Swiss Army Knife for Data Work',
-    long_description='''Swiss Army Knife for Data Work''',
+    long_description=__long_description__,
     author='Open Knowledge Foundation',
     author_email='info@okfn.org',
-    url='http://www.okfn.org/p/swiss/',
+    url='http://knowledgeforge.net/okfn/swiss/',
     install_requires=[
         'python-dateutil>=1.0',
         ],
