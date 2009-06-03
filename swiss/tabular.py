@@ -44,6 +44,17 @@ class TabularData(object):
     def __iter__(self):
         return self.data.__iter__()
 
+    @classmethod
+    def from_list(self, list_, header=True):
+        return TabularData(header=list_[0], data=list_[1:])
+
+    def to_list(self):
+        if self.header:
+            return [ self.header ] + self.data
+        else:
+            return self.data
+
+
 class ReaderBase(object):
     def __init__(self, filepath_or_fileobj=None):
         self.filepath = None

@@ -4,12 +4,26 @@ from StringIO import StringIO
 import swiss.tabular
 
 class TestTabularData:
-
-    tabular = swiss.tabular.TabularData()
+    testlist = [ ['X', 'Y'], [1,2], [3,4] ]
 
     def test_1(self):
-        pass
-    
+        tabular = swiss.tabular.TabularData()
+        assert tabular.header == []
+
+    def test_from_list(self):
+        out = swiss.tabular.TabularData.from_list(self.testlist)
+        assert out.header == [ 'X', 'Y' ]
+        assert out.data == [ [1,2], [3,4] ]
+
+    def test_to_list(self):
+        td = swiss.tabular.TabularData(
+            header=['X', 'Y'],
+            data=[ [1,2], [3,4] ]
+            )
+        out = td.to_list()
+        assert out == self.testlist
+
+
 class TestTranspose:
 
     def test_1(self):
