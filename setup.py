@@ -13,10 +13,19 @@ setup(
     author='Open Knowledge Foundation',
     author_email='info@okfn.org',
     url='http://knowledgeforge.net/okfn/swiss/',
+    download_url='http://knowledgeforge.net/okfn/swiss/',
     install_requires=[
         'python-dateutil>=1.0',
         ],
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
+    classifiers = [
+        'Development Status :: 5 - Production/Stable',
+        'Environment :: Console',
+        'Intended Audience :: Developers',
+        'Operating System :: OS Independent',
+        'Programming Language :: Python',
+        'Topic :: Software Development :: Libraries :: Python Modules'
+    ],
 )

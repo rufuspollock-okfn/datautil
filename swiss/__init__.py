@@ -8,8 +8,9 @@ The swiss package provides various utilities for working with data:
     * tabular module
   * Cleaning up and parsing data.
     * misc and date modules
+
 '''
-__version__ = '0.1'
+__version__ = '0.2a'
 
 from tabular import *
 from cache import *
