@@ -116,7 +116,7 @@ class FlexiDate(object):
     def isoformat(self, strict=False):
         '''Return date in isoformat (same as __str__ but without qualifier).
         
-        WARNING: do not replace '?' in dates.
+        WARNING: does not replace '?' in dates unless strict=True.
         '''
         out = self.year
         # what do we do when no year ...
@@ -157,9 +157,12 @@ class FlexiDate(object):
     
     def as_float(self):
         '''Get as a float (year being the integer part).
+
+        Replace '?' in year with 9 so as to be conservative (e.g. 19?? becomes
+        1900) and elsewhere (month, day) with 0
         '''
         if not self.year: return None
-        out = float(self.year.replace('?', '0'))
+        out = float(self.year.replace('?', '9'))
         if self.month:
             # TODO: we are assuming months are of equal length
             out += float(self.month.replace('?', '0')) / 12.0
@@ -167,7 +170,9 @@ class FlexiDate(object):
                 out += float(self.day.replace('?', '0')) / 365.0
         return out
 
-
+# TODO: support latin stuff like M.DCC.LIII  
+# TODO: convert '-' to '?' when used that way
+# e.g. had this date [181-]
 def parse(date):
     if not date:
         return None
@@ -215,12 +220,13 @@ class DateutilDateParser(DateParserBase):
         date = orig_date = date.strip()
 
         # deal with pre 0AD dates
-        if date.startswith('-') or 'BC' in date:
+        if date.startswith('-') or 'BC' in date or 'B.C.' in date:
             pre0AD = True
         else:
             pre0AD = False
         # BC seems to mess up parser
         date = date.replace('BC', '')
+        date = date.replace('B.C.', '')
 
         # deal with circa: 'c.1950' or 'c1950'
         circa_match = re.match('(.*)c\.?(\d+.*)', date)

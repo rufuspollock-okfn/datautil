@@ -118,6 +118,10 @@ class TestDateParsers(object):
         fd = parser.parse(in1)
         assert str(fd) == '-0004', fd
 
+        in1 = '4 B.C.'
+        fd = parser.parse(in1)
+        assert str(fd) == '-0004', fd
+
     def test_parse(self):
         d1 = datetime.datetime(2000, 1, 23)
         fd = parse(d1)
