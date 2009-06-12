@@ -106,6 +106,10 @@ class TestDateParsers(object):
         fd = parser.parse(in1)
         assert str(fd) == '1768', fd
 
+        in1 = '1768 A.D.'
+        fd = parser.parse(in1)
+        assert str(fd) == '1768', fd
+
         in1 = '-1850'
         fd = parser.parse(in1)
         assert str(fd) == '-1850', fd

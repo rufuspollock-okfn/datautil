@@ -219,6 +219,11 @@ class DateutilDateParser(DateParserBase):
             return None
         date = orig_date = date.strip()
 
+        # various normalizations
+        # TODO: call .lower() first
+        date = date.replace('B.C.', 'BC')
+        date = date.replace('A.D.', 'AD')
+
         # deal with pre 0AD dates
         if date.startswith('-') or 'BC' in date or 'B.C.' in date:
             pre0AD = True
@@ -226,7 +231,6 @@ class DateutilDateParser(DateParserBase):
             pre0AD = False
         # BC seems to mess up parser
         date = date.replace('BC', '')
-        date = date.replace('B.C.', '')
 
         # deal with circa: 'c.1950' or 'c1950'
         circa_match = re.match('(.*)c\.?(\d+.*)', date)
