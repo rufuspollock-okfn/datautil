@@ -15,3 +15,4 @@ __version__ = '0.2a'
 from tabular import *
 from cache import *
 from misc import *
+from id import *
