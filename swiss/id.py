@@ -17,6 +17,7 @@ def uncompress_uuid(b64_encoded):
 
     @return: 36 char str representation of uuid.
     '''
+    b64_encoded = str(b64_encoded)
     if not b64_encoded.endswith('=='):
         b64_encoded += '=='
     out = base64.b64decode(b64_encoded, '_-')

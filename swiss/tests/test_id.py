@@ -11,6 +11,10 @@ def test_compress_and_uncompress():
     orig = swiss.id.uncompress_uuid(out)
     assert orig == hexversion
 
+    # test unicode
+    orig = swiss.id.uncompress_uuid(unicode(out))
+    assert orig == hexversion
+
     u1 = uuid.UUID(hexversion)
     out = swiss.id.compress_uuid(u1)
     assert len(out) == 22
