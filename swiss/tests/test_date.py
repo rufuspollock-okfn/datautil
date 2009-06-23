@@ -146,7 +146,16 @@ class TestDateParsers(object):
         fd = parse('1985?')
         # assert fd.year == u'1985', fd
         # assert fd.qualifier == u'?', fd
+
         fd = parse('c.1780')
-        # assert fd.year == u'1780', fd
-        # assert fd.qualifier == u'c.', fd
+        assert fd.year == u'1780', fd
+        assert fd.qualifier == u"Note 'circa': 'c.1780'", fd
+
+        fd = parse('c. 1780')
+        assert fd.year == u'1780', fd
+        assert fd.qualifier.startswith(u"Note 'circa'"), fd
+
+    def test_ambiguous(self):
+        # TODO: have to be careful here ...
+        fd = parse('1068/1069')
 

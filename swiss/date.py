@@ -233,7 +233,7 @@ class DateutilDateParser(DateParserBase):
         date = date.replace('BC', '')
 
         # deal with circa: 'c.1950' or 'c1950'
-        circa_match = re.match('(.*)c\.?(\d+.*)', date)
+        circa_match = re.match('(.*)c\.?\s*(\d+.*)', date)
         if circa_match:
             # remove circa bit
             qualifier = "Note 'circa': '%s'" % orig_date
