@@ -310,15 +310,15 @@ class HtmlWriter(object):
     Write tabular data to xhtml
     """
     
-    def __init__(self, table_attributes = {'class': 'data'}, decimal_places=2, do_pretty_print=False):
+    def __init__(self, table_attributes = {'class': 'data'}, decimal_places=2, pretty_print=False):
         """
-        @do_pretty_print: whether to pretty print (indent) output
+        @pretty_print: whether to pretty print (indent) output
         @attributes: dictionary of html attribute name/value pairs to be
         added to the table element
         @decimal_places: number of decimal places to use when rounding numerical 
                         values when textifying for table
         """
-        self.do_pretty_print = do_pretty_print
+        self.pretty_print = pretty_print
         self.table_attributes = table_attributes
         self.decimal_places = decimal_places
     
@@ -355,6 +355,8 @@ class HtmlWriter(object):
             htmlTable += self.writeHeading(columnHeadings)
         
         htmlTable += '<tbody>'
+        if self.pretty_print:
+            htmlTable += '\n'
         
         for ii in range(0, len(data)):
             # have to add 1 as first row is headings
@@ -365,7 +367,7 @@ class HtmlWriter(object):
         
         htmlTable += '</tbody></table>'
         
-        if self.do_pretty_print:
+        if self.pretty_print:
             return self.prettyPrint(htmlTable)
         else:
             return htmlTable
@@ -377,6 +379,8 @@ class HtmlWriter(object):
         result = '<thead><tr>'
         result += self.writeGeneralRow(row, 'th')
         result += '</tr></thead>'
+        if self.pretty_print:
+            result += '\n'
         return result
     
     def writeRow(self, row, rowHeading = ''):
@@ -385,6 +389,8 @@ class HtmlWriter(object):
             result = self._writeTag('th', rowHeading)
         result += self.writeGeneralRow(row, 'td')
         result = self._writeTag('tr', result)
+        if self.pretty_print:
+            result += '\n'
         return result
     
     def writeGeneralRow(self, row, tagName):
@@ -396,9 +402,12 @@ class HtmlWriter(object):
     def prettyPrint(self, html):
         """pretty print html using HTMLTidy"""
         # [[TODO: strip out html wrapper stuff that is added (head, body etc)
-        import mx.Tidy
-        return self.tabify(mx.Tidy.tidy(html, None, None, wrap = 0,
-            indent = 'yes')[2])
+        try:
+            import mx.Tidy
+            out = mx.Tidy.tidy(html, None, None, wrap = 0, indent = 'yes')[2]
+        except:
+            out = html
+        return self.tabify(out)
         
     def tabify(self, instr, tabsize = 2):
         """
@@ -408,8 +417,9 @@ class HtmlWriter(object):
         return re.sub(whitespace, '\t', instr)
         
     def _writeTag(self, tagName, value):
-        return '<' + tagName + '>' + self._processTagValueToText(value) + \
+        out = '<' + tagName + '>' + self._processTagValueToText(value) + \
             '</' + tagName + '>'
+        return out
     
     def _processTagValueToText(self, tagValue):
         # if not already text then round
