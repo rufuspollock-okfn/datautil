@@ -16,6 +16,8 @@ setup(
     download_url='http://knowledgeforge.net/okfn/swiss/',
     install_requires=[
         'python-dateutil>=1.0',
+        # (optional) for excel handling
+        # xlrd
         ],
     packages=find_packages(),
     include_package_data=True,

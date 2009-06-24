@@ -94,20 +94,6 @@ class TestCsvWriter:
         assert out == exp
 
 
-# TODO: reenable
-# TODO: sort out a smaller xls_reader_test.xls file
-class _TestXlsReader:
-
-    def test_stuff(self):
-        fp = os.path.dirname(__file__)
-        fp = os.path.join(fp, 'xls_reader_test.xls')
-        fo = open(fp)
-        reader = swiss.tabular.XlsReader()
-        tab = reader.read(fo)
-        assert tab.data[0][0] == 1850
-        assert tab.data[19][1] == 12.3
-
-
 class TestHtmlReader:
 
     inraw1 = '''
