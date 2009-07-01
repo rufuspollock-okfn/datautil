@@ -141,15 +141,19 @@ class TestDateParsers(object):
         d1 = parse(None)
         assert d1 is None
     
+    def test_parse_wildcards(self):
+        fd = parse('198?')
+        assert fd.year == None, fd.year # doesn't parse
+        assert fd.as_float == u'1980', fd.as_float
+
     def test_parse_with_qualifiers(self):
-        # TODO: get this working
         fd = parse('1985?')
-        # assert fd.year == u'1985', fd
-        # assert fd.qualifier == u'?', fd
+        assert fd.year == u'1985', fd
+        assert fd.qualifier == u'Uncertainty : 1985?', fd.qualifier
 
         fd = parse('c.1780')
         assert fd.year == u'1780', fd
-        assert fd.qualifier == u"Note 'circa': 'c.1780'", fd
+        assert fd.qualifier == u"Note 'circa' : c.1780", fd
 
         fd = parse('c. 1780')
         assert fd.year == u'1780', fd

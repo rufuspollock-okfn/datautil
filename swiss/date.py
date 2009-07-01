@@ -214,7 +214,7 @@ except:
 
 class DateutilDateParser(DateParserBase):
     def parse(self, date):
-        qualifier = ''
+        qualifiers = []
         if dateutil_parser is None:
             return None
         date = orig_date = date.strip()
@@ -236,8 +236,15 @@ class DateutilDateParser(DateParserBase):
         circa_match = re.match('(.*)c\.?\s*(\d+.*)', date)
         if circa_match:
             # remove circa bit
-            qualifier = "Note 'circa': '%s'" % orig_date
+            qualifiers.append("Note 'circa'")
             date = ''.join(circa_match.groups())
+
+        # Deal with uncertainty: '1985?'
+        uncertainty_match = re.match('([0-9xX]{4})\?', date)
+        if uncertainty_match:
+            # remove the ?
+            date = date[:-1]
+            qualifiers.append('Uncertainty')
 
         # Parse the numbers intelligently
         # do not use std parser function as creates lots of default data
@@ -265,5 +272,10 @@ class DateutilDateParser(DateParserBase):
         # finally add back in BC stuff
         if pre0AD:
             year = -year
+            
+        if not qualifiers:
+            qualifier = ''
+        else:
+            qualifier = ', '.join(qualifiers) + (' : %s' % orig_date)
         return FlexiDate(year, res.month, res.day, qualifier=qualifier)
     
