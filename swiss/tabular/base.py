@@ -74,6 +74,16 @@ class ReaderBase(object):
     def read(self, filepath_or_fileobj=None):
         self._filepath_or_fileobj(filepath_or_fileobj)
 
+class WriterBase(object):
+    def write(self, tabular_data, fileobj):
+        pass
+
+    def write_str(self, tabular_data):
+        from StringIO import StringIO
+        holder = StringIO()
+        self.write(tabular_data, holder)
+        holder.seek(0)
+        return holder.read()
 
 def transpose(data):
     '''Transpose a list of lists.
@@ -373,8 +383,19 @@ def format_cols_as_ints(matrix, cols):
 ## --------------------------------
 ## Converting to Latex
 
-class LatexWriter(object):
+class LatexWriter(WriterBase):
 
+    def write(self, tabular_data, fileobj):
+        # TODO: 2009-06-30 proper user of fileobj
+        matrix = tabular_data.data
+        has_header = len(tabular_data.header) > 0
+        has_column_headings = False
+        if has_header: 
+            matrix.insert(0, tabular_data.header)
+            has_column_headings = True
+        out = self._write(matrix, has_header, has_column_headings)
+        fileobj.write(out)
+    
     def process_row(self, row, heading=False):
         if len(row) == 0: return
         out = '%s' % self.process_cell(row[0], heading or self.has_column_headings)
@@ -396,13 +417,6 @@ class LatexWriter(object):
         for ch in escape_chars:
             out = out.replace(ch, '\\%s' % ch)
         return out
-    
-    def write(self, tabular_data, has_column_headings=False):
-        matrix = tabular_data.data
-        has_header = len(tabular_data.header) > 0
-        if has_header: 
-            matrix.insert(0, tabular_data.header)
-        return self._write(matrix, has_header, has_column_headings)
     
     def _write(self, matrix, has_header=True, has_column_headings=False):
         self.has_column_headings = has_column_headings
