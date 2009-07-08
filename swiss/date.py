@@ -264,7 +264,7 @@ class DateutilDateParser(DateParserBase):
         # it '86' -> '1986'. So strip off the '19'. (If the date specified
         # day/month then a two digit year is more likely to be this century
         # and so allow the '19' prefix to it.)
-        elif len(date) == 2:
+        elif len(date) == 2 or date.startswith('00'):
             year = res.year % 100
         else:
             year = res.year
