@@ -24,3 +24,16 @@ def uncompress_uuid(b64_encoded):
     _uuid = uuid.UUID(bytes=out)
     return str(_uuid)
 
+
+import struct
+def int_to_b32(int_):
+    out = struct.pack('1i', int_)
+    out = base64.b32encode(out)
+    # throw away trailing '='
+    return out[:-1]
+
+def b32_to_int(b32):
+    out = base64.b32decode(b32+'=', casemap=True)
+    out = struct.unpack('1i', out)[0]
+    return out
+
