@@ -193,7 +193,7 @@ r'''\textbf{H1} & \textbf{H2} \\
 
     def test_write(self):
         td = swiss.tabular.TabularData(data=self.matrix[1:], header=self.matrix[0])
-        out = self.m2l.write(td)
+        out = self.m2l.write_str(td)
         self.diff(self.exp, out)
         assert out == self.exp
 

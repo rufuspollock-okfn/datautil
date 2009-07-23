@@ -74,16 +74,22 @@ class ReaderBase(object):
     def read(self, filepath_or_fileobj=None):
         self._filepath_or_fileobj(filepath_or_fileobj)
 
-class WriterBase(object):
-    def write(self, tabular_data, fileobj):
-        pass
 
-    def write_str(self, tabular_data):
+class WriterBase(object):
+    '''
+    Extra arguments to write methods:
+        has_row_headings: first col of each row is a heading.
+    '''
+    def write(self, tabular_data, fileobj):
+        raise NotImplementedError
+
+    def write_str(self, tabular_data, **kwargs):
         from StringIO import StringIO
         holder = StringIO()
-        self.write(tabular_data, holder)
+        self.write(tabular_data, holder, **kwargs)
         holder.seek(0)
         return holder.read()
+
 
 def transpose(data):
     '''Transpose a list of lists.
@@ -251,6 +257,8 @@ class HtmlWriter(object):
         
         @param data: table of data that makes up table
         @param caption: the caption for the table (if empty no caption created)
+        @param rowHeadings: additional headings for rows (separate from
+        tabulardata)
         """
         columnHeadings = tabulardata.header
         data = tabulardata.data
@@ -385,20 +393,27 @@ def format_cols_as_ints(matrix, cols):
 
 class LatexWriter(WriterBase):
 
-    def write(self, tabular_data, fileobj):
-        # TODO: 2009-06-30 proper user of fileobj
+    def write(self, tabular_data, fileobj, has_row_headings=False):
+        self.has_row_headings = has_row_headings
         matrix = tabular_data.data
         has_header = len(tabular_data.header) > 0
-        has_column_headings = False
         if has_header: 
             matrix.insert(0, tabular_data.header)
-            has_column_headings = True
-        out = self._write(matrix, has_header, has_column_headings)
+        out = self._write(matrix, has_header)
         fileobj.write(out)
     
+    def _write(self, matrix, has_header=True):
+        if len(matrix) == 0: return
+        # no hline on first row as this seems to mess up latex \input
+        # http://groups.google.com/group/comp.text.tex/browse_thread/thread/1e1db553a958ebd8/0e590a22cb59f43d
+        out = '%s' % self.process_row(matrix[0], has_header)
+        for row in matrix[1:]:
+            out += self.process_row(row) 
+        return out
+
     def process_row(self, row, heading=False):
         if len(row) == 0: return
-        out = '%s' % self.process_cell(row[0], heading or self.has_column_headings)
+        out = '%s' % self.process_cell(row[0], heading or self.has_row_headings)
         for cell in row[1:]:
             out += ' & %s' % self.process_cell(cell, heading)
         out += ' \\\\\n\hline\n'
@@ -418,19 +433,11 @@ class LatexWriter(WriterBase):
             out = out.replace(ch, '\\%s' % ch)
         return out
     
-    def _write(self, matrix, has_header=True, has_column_headings=False):
-        self.has_column_headings = has_column_headings
-        if len(matrix) == 0: return
-        # no hline on first row as this seems to mess up latex \input
-        # http://groups.google.com/group/comp.text.tex/browse_thread/thread/1e1db553a958ebd8/0e590a22cb59f43d
-        out = '%s' % self.process_row(matrix[0], has_header)
-        for row in matrix[1:]:
-            out += self.process_row(row) 
-        return out
 
-def table2latex(matrix, has_header=True, has_column_headings=False):
+def table2latex(matrix, has_header=True, has_row_headings=False):
     m2l = LatexWriter()
-    return m2l._write(matrix, has_header, has_column_headings)
+    m2l.has_row_headings = has_row_headings
+    return m2l._write(matrix, has_header)
 
 def pivot(table, left, top, value):
     """Unnormalize (pivot) a normalised input set of tabular data.
