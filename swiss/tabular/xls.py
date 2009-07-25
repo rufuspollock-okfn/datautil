@@ -16,7 +16,8 @@ class XlsReader(ReaderBase):
     '''
     def __init__(self, filepath_or_fileobj=None):
         super(XlsReader, self).__init__(filepath_or_fileobj)
-        self.book = xlrd.open_workbook(file_contents=self.fileobj.read())
+        if self.fileobj:
+            self.book = xlrd.open_workbook(file_contents=self.fileobj.read())
         ## TODO: fix the rest of this
 
     def read(self, fileobj=None, sheet_index=0):
