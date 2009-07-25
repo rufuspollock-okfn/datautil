@@ -81,12 +81,12 @@ class WriterBase(object):
         has_row_headings: first col of each row is a heading.
     '''
     def write(self, tabular_data, fileobj):
-        raise NotImplementedError
+        pass
 
-    def write_str(self, tabular_data, **kwargs):
+    def write_str(self, tabular_data, *args, **kwargs):
         from StringIO import StringIO
         holder = StringIO()
-        self.write(tabular_data, holder, **kwargs)
+        self.write(tabular_data, holder, *args, **kwargs)
         holder.seek(0)
         return holder.read()
 
@@ -165,9 +165,9 @@ class CsvReader(object):
 # for backwards compatibility
 ReaderCsv = CsvReader
 
-class CsvWriter(object):
+class CsvWriter(WriterBase):
     # TODO: unicode support a la CsvReader
-    def write(self, fileobj, tabular_data, encoding='utf-8'):
+    def write(self, tabular_data, fileobj, encoding='utf-8'):
         writer = csv.writer(fileobj)
         if tabular_data.header:
             writer.writerow(tabular_data.header)
@@ -231,7 +231,7 @@ class HtmlReader(HTMLParser):
 
     
 import re
-class HtmlWriter(object):
+class HtmlWriter(WriterBase):
     """
     Write tabular data to xhtml
     """
@@ -248,7 +248,7 @@ class HtmlWriter(object):
         self.table_attributes = table_attributes
         self.decimal_places = decimal_places
     
-    def write(self, tabulardata, caption = '', rowHeadings = []):
+    def write(self, tabulardata, fileobj, caption = '', rowHeadings = []):
         """
         Write matrix of data to xhtml table.
         Allow for addition of row and column headings
@@ -296,9 +296,9 @@ class HtmlWriter(object):
         htmlTable += '</tbody></table>'
         
         if self.pretty_print:
-            return self.prettyPrint(htmlTable)
+            fileobj.write(self.prettyPrint(htmlTable))
         else:
-            return htmlTable
+            fileobj.write(htmlTable)
         
     def writeHeading(self, row):
         """

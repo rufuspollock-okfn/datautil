@@ -84,7 +84,7 @@ class TestCsvWriter:
         fo = StringIO()
         td = swiss.tabular.TabularData([[1,2],[3,4]], header=['one',
             'two'])
-        writer.write(fo, td)
+        writer.write(td, fo)
         fo.seek(0)
         out = fo.read()
         exp = \
@@ -129,24 +129,24 @@ class TestWriterHtml:
         self.indata1 = swiss.tabular.TabularData(data=rawData)
         self.writer1 = swiss.tabular.WriterHtml({'id':1, 'class': 'data'})
 
-    def testSimple(self):
+    def test_0_simple(self):
         indata1 = [[1,1], [0,1]]
         expected = '<table id="1" class="data"><tbody><tr><td>1</td><td>1</td></tr>'+\
             '<tr><td>0</td><td>1</td></tr></tbody></table>'
-        out1 = self.writer1.write(self.indata1)
+        out1 = self.writer1.write_str(self.indata1)
         assert expected == out1
     
-    def testColHeadings(self):
+    def test_col_headings(self):
         self.indata1.header = [u'x','y']
         caption = ''
         expected = '<table id="1" class="data"><thead><tr><th>x</th><th>y</th></tr>'+\
             '</thead><tbody><tr><td>1</td><td>1</td></tr><tr><td>0</td>' + \
             '<td>1</td></tr></tbody></table>'
         # no caption but headings
-        out1 = self.writer1.write(self.indata1, caption)
+        out1 = self.writer1.write_str(self.indata1, caption)
         assert expected == out1
     
-    def testRowHeadings(self):
+    def test_row_headings(self):
         self.indata1.header = ['x','y']
         rowHeadings = ['Date 1', 'Date 2']
         caption = ''
@@ -155,7 +155,7 @@ class TestWriterHtml:
             '<td>1</td></tr><tr><th>Date 2</th><td>0</td><td>1</td></tr>' + \
             '</tbody></table>'
         # no caption but headings
-        out1 = self.writer1.write(self.indata1, caption, rowHeadings)
+        out1 = self.writer1.write_str(self.indata1, caption, rowHeadings)
         assert expected == out1
     
 #    def testPrettyPrint(self):

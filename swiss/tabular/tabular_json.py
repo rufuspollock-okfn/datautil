@@ -30,8 +30,10 @@ class JsonReader(ReaderBase):
 
 class JsonWriter(WriterBase):
 
-    def write(self, tabular_data, fileobj):
+    def write(self, tabular_data, fileobj, indent=2):
+        super(JsonWriter, self).write(tabular_data, fileobj)
         jsondata = { u'header': tabular_data.header,
                 u'data': tabular_data.data
                 }
-        json.dump(jsondata, fileobj)
+        json.dump(jsondata, fileobj, indent=indent)
+
