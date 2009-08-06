@@ -56,10 +56,11 @@ class TabularData(object):
 
 
 class ReaderBase(object):
-    def __init__(self, filepath_or_fileobj=None):
+    def __init__(self, filepath_or_fileobj=None, encoding='utf8'):
         self.filepath = None
         self.fileobj = None
         self._filepath_or_fileobj(filepath_or_fileobj)
+        self.encoding = 'utf8'
 
     def _filepath_or_fileobj(self, filepath_or_fileobj):
         if filepath_or_fileobj is None: # do not overwrite any existing value
@@ -111,7 +112,7 @@ class UTF8Recoder:
     def next(self):
         return self.reader.next().encode('utf-8')
 
-class CsvReader(object):
+class CsvReader(ReaderBase):
     """Read data from a csv file into a TabularData structure
 
     Note that the csv module does *not* support unicode:
@@ -121,32 +122,34 @@ class CsvReader(object):
     > all input should be UTF-8 or printable ASCII to be safe; see the examples
     > in section 9.1.5. These restrictions will be removed in the future.
     > <http://docs.python.org/lib/module-csv.html>
-
-    Thus L{read} method requires uses an encoding.
     """
 
-    def read(self, fileobj, encoding='utf-8'):
-        """Read in a csv file and return a TabularData object
+    def read(self, filepath_or_fileobj=None, encoding=None):
+        """Read in a csv file and return a TabularData object.
 
         @param fileobj: file like object.
-        @param encoding: the encoding of the file like object. NB: will check
-        if fileobj already in unicode in which case this is ignored.
+        @param encoding: if set use this instead of default encoding set in
+            __init__ to decode the file like object. NB: will check if fileobj
+            already in unicode in which case this is ignored.
         @return tabular data object (all values encoded as utf-8).
         """
+        super(CsvReader, self).read(filepath_or_fileobj)
+        if encoding:
+            self.encoding = encoding
         tabData = TabularData()
 
-        sample = fileobj.read()
+        sample = self.fileobj.read()
         # first do a simple test -- maybe sample is already unicode
         if type(sample) == unicode:
-            encoded_fo = UTF8Recoder(fileobj, None)
+            encoded_fo = UTF8Recoder(self.fileobj, None)
         else:
-            sample = sample.decode(encoding)
-            encoded_fo = UTF8Recoder(fileobj, encoding)
+            sample = sample.decode(self.encoding)
+            encoded_fo = UTF8Recoder(self.fileobj, self.encoding)
         sample = sample.encode('utf-8')
         sniffer = csv.Sniffer()
         hasHeader = sniffer.has_header(sample)
 
-        fileobj.seek(0)
+        self.fileobj.seek(0)
         reader = csv.reader(encoded_fo, skipinitialspace=True)
         if hasHeader:
             tabData.header = reader.next()
