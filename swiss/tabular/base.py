@@ -81,7 +81,14 @@ class WriterBase(object):
     Extra arguments to write methods:
         has_row_headings: first col of each row is a heading.
     '''
-    def write(self, tabular_data, fileobj):
+    def __init__(self, round_ndigits=None, *args, **kwargs):
+        '''
+        @round_ndigits: number of decimal places to use when rounding numerical 
+                        values when textifying for output 
+        '''
+        self.round_ndigits = round_ndigits
+
+    def write(self, tabular_data, fileobj, **kwargs):
         pass
 
     def write_str(self, tabular_data, *args, **kwargs):
@@ -90,6 +97,25 @@ class WriterBase(object):
         self.write(tabular_data, holder, *args, **kwargs)
         holder.seek(0)
         return holder.read()
+
+    def value_to_str(self, value):
+        '''Convert value to text (rounding floats/ints as necessary).
+        '''
+        if value is None:
+            return ''
+        if self.round_ndigits is not None and \
+                (isinstance(value, int) or isinstance(value, float)):
+            roundedResult = round(value, self.round_ndigits)
+            if self.round_ndigits <= 0: # o/w will have in .0 at end
+                roundedResult = int(roundedResult)
+            roundedResult = str(roundedResult)
+            # deal with case when rounding has added unnecessary digits
+            if len(str(value)) < len(roundedResult):
+                return str(value)
+            else:
+                return roundedResult
+        else:
+            return unicode(value)
 
 
 import csv
@@ -231,17 +257,15 @@ class HtmlWriter(WriterBase):
     Write tabular data to xhtml
     """
     
-    def __init__(self, table_attributes = {'class': 'data'}, decimal_places=2, pretty_print=False):
+    def __init__(self, round_ndigits=2, pretty_print=False, table_attributes = {'class': 'data'}):
         """
         @pretty_print: whether to pretty print (indent) output
-        @attributes: dictionary of html attribute name/value pairs to be
+        @table_attributes: dictionary of html attribute name/value pairs to be
         added to the table element
-        @decimal_places: number of decimal places to use when rounding numerical 
-                        values when textifying for table
         """
+        super(HtmlWriter, self).__init__(round_ndigits)
         self.pretty_print = pretty_print
         self.table_attributes = table_attributes
-        self.decimal_places = decimal_places
     
     def write(self, tabulardata, fileobj, caption = '', rowHeadings = []):
         """
@@ -340,24 +364,10 @@ class HtmlWriter(WriterBase):
         return re.sub(whitespace, '\t', instr)
         
     def _writeTag(self, tagName, value):
-        out = '<' + tagName + '>' + self._processTagValueToText(value) + \
+        out = '<' + tagName + '>' + self.value_to_str(value) + \
             '</' + tagName + '>'
         return out
     
-    def _processTagValueToText(self, tagValue):
-        # if not already text then round
-        if tagValue is None:
-            return ''
-        elif isinstance(tagValue, int) or isinstance(tagValue, float):
-            roundedResult = str(round(tagValue, self.decimal_places))
-            # deal with case when rounding has added unnecessary digits
-            if len(str(tagValue)) < len(roundedResult):
-                return str(tagValue)
-            else:
-                return roundedResult
-        else:
-            return unicode(tagValue)
-
 # for backwards compatibility
 # 2008-05-30
 WriterHtml = HtmlWriter
@@ -394,7 +404,8 @@ class LatexWriter(WriterBase):
         return out
 
     def process_cell(self, cell, heading=False):
-        cell_text = self.escape(unicode(cell))
+        cell_text = self.value_to_str(cell)
+        cell_text = self.escape(cell_text)
         if heading:
             return '\\textbf{%s}' % cell_text
         else:

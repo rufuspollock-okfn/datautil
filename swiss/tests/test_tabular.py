@@ -24,6 +24,29 @@ class TestTabularData:
         assert out == self.testlist
 
 
+class TestWriterBase:
+    def test_value_to_str(self):
+        w = swiss.tabular.WriterBase() # round_ndigits=None
+        out = w.value_to_str('x')
+        assert out == u'x', out
+        out = w.value_to_str(1)
+        assert out == u'1', out
+        out = w.value_to_str(1.3555)
+        assert out == u'1.3555', out
+
+        w = swiss.tabular.WriterBase(round_ndigits=2)
+        out = w.value_to_str('x')
+        assert out == u'x', out
+        out = w.value_to_str(1)
+        assert out == u'1', out
+        out = w.value_to_str(1.3555)
+        assert out == u'1.36', out
+
+        w.round_ndigits = -1
+        out = w.value_to_str(102.34)
+        assert out == u'100', out
+
+
 class TestReaderCsv(object):
     
     csvdata = \
@@ -108,12 +131,12 @@ class TestHtmlReader:
         assert tab.data == self.exp1
 
 
-class TestWriterHtml:
+class TestHtmlWriter:
 
     def setUp(self):
         rawData = [[1,1], [0,1]]
         self.indata1 = swiss.tabular.TabularData(data=rawData)
-        self.writer1 = swiss.tabular.WriterHtml({'id':1, 'class': 'data'})
+        self.writer1 = swiss.tabular.HtmlWriter(table_attributes={'id':1, 'class': 'data'})
 
     def test_0_simple(self):
         indata1 = [[1,1], [0,1]]
