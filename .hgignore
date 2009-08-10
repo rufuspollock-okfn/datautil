@@ -1,6 +1,7 @@
 syntax: glob
 *.egg-info/*
 *.pyc
+sandbox/*
 
 syntax: regexp
 ^build$
