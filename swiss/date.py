@@ -113,6 +113,9 @@ class FlexiDate(object):
             out += u' [%s]' % self.qualifier
         return out
 
+    def __repr__(self):
+        return u'%s %s' % (self.__class__, self.__str__())
+
     def isoformat(self, strict=False):
         '''Return date in isoformat (same as __str__ but without qualifier).
         
@@ -170,6 +173,7 @@ class FlexiDate(object):
                 out += float(self.day.replace('?', '0')) / 365.0
         return out
 
+# TODO: support for quarters e.g. Q4 1980 or 1954 Q3
 # TODO: support latin stuff like M.DCC.LIII  
 # TODO: convert '-' to '?' when used that way
 # e.g. had this date [181-]
