@@ -81,14 +81,14 @@ class WriterBase(object):
     Extra arguments to write methods:
         has_row_headings: first col of each row is a heading.
     '''
-    def __init__(self, round_ndigits=None, *args, **kwargs):
+    def __init__(self, round_ndigits=None, **kwargs):
         '''
         @round_ndigits: number of decimal places to use when rounding numerical 
                         values when textifying for output 
         '''
         self.round_ndigits = round_ndigits
 
-    def write(self, tabular_data, fileobj, **kwargs):
+    def write(self, tabular_data, fileobj, *args, **kwargs):
         pass
 
     def write_str(self, tabular_data, *args, **kwargs):
