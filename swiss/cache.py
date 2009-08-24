@@ -21,16 +21,20 @@ class Cache(object):
 
     def retrieve(self, url, force=False):
         '''Retrieve url into cache and return the local path to it.'''
-        dest = self.filepath(url)
+        dest = self.cache_path(url)
         if not os.path.exists(dest) or force:
             self.dl(url, dest)
         return dest
 
-    def filepath(self, url):
+    def cache_path(self, url):
         '''Local path for url within cache.'''
         name = self.basename(url)
         dest = os.path.join(self.path, name)
         return dest
+
+    def filepath(self, url):
+        '''Deprecated: use cache_path'''
+        return self.cache_path(url)
 
     @classmethod
     def basename(self, url):
