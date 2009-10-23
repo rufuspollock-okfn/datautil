@@ -12,14 +12,14 @@ The swiss package provides various utilities for working with data:
 CHANGELOG
 =========
 
-v0.2 2009-08-??
+v0.2 2009-10-23
 ---------------
 
   * Extensive refactoring of tabular module/package
     * Standardized interface with BaseReader and BaseWriter
     * JsonReader and JsonWriter providing json reading and writing
     * TxtWriter to support writing to plain text
-  * Improvements to date parsing (e.g. support for circa 'c.')
+  * Improvements to date parsing (support for circa, 'c.', etc)
   * New id module to do 'compression' of uuids using 32 and 64 bit encoding
 
 
@@ -32,7 +32,7 @@ v0.1 2009-06-03
     and associated utilities (such as pivot_table)
   * Cleaning and parsing data especially dates (misc and date modules)
 '''
-__version__ = '0.2a'
+__version__ = '0.2'
 
 import tabular
 from cache import *
