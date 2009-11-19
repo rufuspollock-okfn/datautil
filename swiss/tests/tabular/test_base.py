@@ -167,6 +167,13 @@ class TestHtmlWriter:
         out1 = self.writer1.write_str(self.indata1, caption, rowHeadings)
         assert expected == out1
     
+    def test_escaping(self):
+        tdata = swiss.tabular.TabularData(header=['s&p', 'y<z'])
+        out = self.writer1.write_str(tdata)
+        assert 's&amp;p' in out, out
+        assert 'y&lt;z' in out
+
+    
 #    def testPrettyPrint(self):
 #        in1 = '<table><tr><th>x</th><th>y</th></tr>' + \
 #            '<tr><td>0</td><td>1</td></tr></table>'

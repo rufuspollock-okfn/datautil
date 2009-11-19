@@ -290,7 +290,7 @@ class HtmlWriter(WriterBase):
         
         # deal with caption
         if caption != '':
-            htmlTable += self._writeTag('caption', caption)
+            htmlTable += '<caption>%s</caption>' % caption
         
         # deal with col headings
         # if we there are rowHeadings may want to add blank column at front
@@ -318,6 +318,12 @@ class HtmlWriter(WriterBase):
             fileobj.write(self.prettyPrint(htmlTable))
         else:
             fileobj.write(htmlTable)
+
+    def value_to_str(self, value):
+        import cgi
+        out = super(HtmlWriter, self).value_to_str(value)
+        out = cgi.escape(out)
+        return out
         
     def writeHeading(self, row):
         """
@@ -333,9 +339,9 @@ class HtmlWriter(WriterBase):
     def writeRow(self, row, rowHeading = ''):
         result = ''
         if rowHeading != '':
-            result = self._writeTag('th', rowHeading)
+            result = '<th>%s</th>' % self.value_to_str(rowHeading)
         result += self.writeGeneralRow(row, 'td')
-        result = self._writeTag('tr', result)
+        result = '<tr>%s</tr>' % result
         if self.pretty_print:
             result += '\n'
         return result
@@ -343,7 +349,7 @@ class HtmlWriter(WriterBase):
     def writeGeneralRow(self, row, tagName):
         result = ''
         for ii in range(len(row)):
-            result += self._writeTag(tagName, row[ii])
+            result += '<%s>%s</%s>' % (tagName, self.value_to_str(row[ii]), tagName)
         return result
         
     def prettyPrint(self, html):
@@ -363,10 +369,6 @@ class HtmlWriter(WriterBase):
         whitespace = tabsize * ' '
         return re.sub(whitespace, '\t', instr)
         
-    def _writeTag(self, tagName, value):
-        out = '<' + tagName + '>' + self.value_to_str(value) + \
-            '</' + tagName + '>'
-        return out
     
 # for backwards compatibility
 # 2008-05-30
