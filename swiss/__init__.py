@@ -38,7 +38,7 @@ v0.1 2009-06-03
     and associated utilities (such as pivot_table)
   * Cleaning and parsing data especially dates (misc and date modules)
 '''
-__version__ = '0.2'
+__version__ = '0.3a'
 
 import tabular
 from cache import *
