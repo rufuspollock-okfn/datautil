@@ -4,16 +4,11 @@ from HTMLParser import HTMLParser
 from base import TabularData, ReaderBase, WriterBase
 
 
-class HtmlReader(WriterBase, HTMLParser):
+class HtmlReader(ReaderBase):
     '''Read data from HTML table into L{TabularData}.
 
-    # TODO: tbody, thead etc
-    # TODO: nested tables
-
-    # TODO: will barf on bad html so may need to run tidy first ...
-    # tidy -w 0 -b -omit -asxml -ascii
     '''
-    def read(self, fileobj, table_index=0):
+    def read(self, filepath_or_fileobj=None, table_index=0):
         '''Read data from fileobj.
 
         NB: post read all tables extracted are in attribute named 'tables'.
@@ -23,12 +18,22 @@ class HtmlReader(WriterBase, HTMLParser):
         @return: L{TabularData} object (all content in the data part, i.e. no
         header).
         '''
-        self.reset()
-        self.feed(fileobj.read())
-        tab = TabularData()
-        tab.data = self.tables[table_index]
-        return tab
+        super(HtmlReader, self).read(filepath_or_fileobj)
+        parser = _OurTableExtractor()
+        parser.reset()
+        parser.feed(self.fileobj.read())
+        self.tables = parser.tables
+        return self.tables[table_index]
 
+
+class _OurTableExtractor(HTMLParser):
+    '''
+    # TODO: tbody, thead etc
+    # TODO: nested tables
+
+    # TODO: will barf on bad html so may need to run tidy first ...
+    # tidy -w 0 -b -omit -asxml -ascii
+    '''
     def reset(self):
         HTMLParser.reset(self)
         self.tables = []
@@ -50,7 +55,7 @@ class HtmlReader(WriterBase, HTMLParser):
         if tag == 'td' or tag == 'th':
             self._row.append(self._text)
         if tag == 'table':
-            self.tables.append(self._rows)
+            self.tables.append(TabularData(data=self._rows))
             self._rows = []
 
     def handle_data(self, data):
