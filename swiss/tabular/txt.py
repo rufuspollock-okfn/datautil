@@ -35,7 +35,7 @@ TODO
         result = ''
         formatter = None
         row_cache = []
-        sample_length = 2
+        sample_length = 4
         rows = tabular_data.data
         if tabular_data.header:
             rows = [ tabular_data.header ] + rows
@@ -58,9 +58,10 @@ TODO
         self._set_colwidths(sample_rows)
         if self.colwidths[0] < 2:
             msg =\
-'''It is not possible to effectively format this many columns of material with
+u'''It is not possible to effectively format this many columns of material with
 this narrow an output window. Column width is: %s''' % self.colwidths[0]
-            raise ValueError(msg)
+            # TODO: log it?
+            print msg
 
     def _write_row(self, row):
         '''Return the input 'python' row as an appropriately formatted string.
