@@ -1,11 +1,13 @@
 '''JSON Reader and Writer'''
 try:
     import json
-except:
-    import simplejson as json
-
-
+except ImportError:
+    try:
+        import simplejson as json
+    except ImportError: # simplejson not installed
+        pass
 from base import TabularData, ReaderBase, WriterBase
+
 
 class JsonReader(ReaderBase):
     def read(self, filepath_or_fileobj=None):
