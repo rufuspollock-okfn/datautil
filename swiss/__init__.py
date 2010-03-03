@@ -18,6 +18,11 @@ The swiss package provides various utilities for working with data:
 CHANGELOG
 =========
 
+v0.3 2010-03-01
+---------------
+
+  * Support for google docs spreadsheets as sources for TabularData
+
 v0.2 2009-10-23
 ---------------
 
