@@ -22,6 +22,7 @@ v0.3 2010-03-01
 ---------------
 
   * Support for google docs spreadsheets as sources for TabularData
+  * Improve documentation of date module and add FlexiDate.as_datetime()
 
 v0.2 2009-10-23
 ---------------

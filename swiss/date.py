@@ -1,70 +1,35 @@
 '''Date parsing and normalization utilities based on FlexiDate.
 
+To parser dates use parse, e.g.::
+
+    parse('1890') -> FlexiDate(year=u'1890')
+    parse('1890?') -> FlexiDate(year=u'1890', qualifier='Uncertainty: 1985?')
+
+Once you have a FlexiDate you can get access to attributes (strings of course
+...)::
+
+    fd = parse('Jan 1890')
+    fd.year # u'1890'
+    fd.month # u'01'
+
+And convert to other forms:
+
+    fd.as_float() # 1890
+    fd.as_datetime() # datetime(1890,01,01)
+
+Background
+==========
+
 FlexiDate is focused on supporting:
 
   1. Dates outside of Python (or DB) supported period (esp. dates < 0 AD)
   2. Imprecise dates (c.1860, 18??, fl. 1534, etc)
   3. Normalization of dates to machine processable versions
   4. Sortable in the database (in correct date order)
-  5. Human readability as dates will be re-edited/viewed by people
-    * As we know best this = preservation of "user" entered dates 
 
-Not all of these requirements are satisfiable at once in a simple way.
+For more information see:
 
-Be clear about what we want:
-
-  1. Storage (and preservation) of "user" dates (both normal and non-normal)
-  2. Normalization of dates (e.g. to ~ ISO 8601)
-  3. Integration with database (sortability and serializability)
-
-Solution for 1: Represent dates as strings.
-
-Solution for 2: Have a parser (via an intermediate FlexiDate object).
-
-Solution for 3:
-===============
-
-Remark: no string based date format will sort dates correctly based on std
-string ordering (PF: let x,y be +ve dates and X,Y their string representations
-then if X<Y => -X<-Y (wrong!))
-
-Thus we need to add some other field if we wish dates to be correctly sorted
-(or not worry about sorting of -ve dates ...)
-
-1. For any given date attribute have 2 actual fields:
-
-  * user version -- the version edited by users
-  * normalized/parsed version -- a version that is usable by machines
-
-2. Store both versions in a single field but with some form of serialization.
-
-3. Convert dates to long ints (unlimited in precision) and put this in a
-separate field and use that for sorting.
-
-
-Comments
-++++++++
-
-Initially thought that we should parse before saving into a FlexiDate format
-but: a) why bother b) when parsing always hard not to be lossy (in particular
-when converting to iso8601 using e.g. dateutil very difficult to not add info
-e.g. parsing 1860 can easily give us 1860-01-01 ...).
-
-
-Existing Libraries
-++++++++++++++++++
-
-See: http://wiki.python.org/moin/WorkingWithTime
-
-ISO 8601: [3]
-
-
-References
-==========
-
-[1]: http://www.feedparser.org/docs/date-parsing.html
-[2]: http://seehuhn.de/pages/pdate
-[3]: http://code.google.com/p/pyiso8601/source/browse/trunk/iso8601/iso8601.py
+http://www.rufuspollock.org/2009/06/18/flexible-dates-in-python/
 '''
 import re
 import datetime
@@ -162,7 +127,9 @@ class FlexiDate(object):
         '''Get as a float (year being the integer part).
 
         Replace '?' in year with 9 so as to be conservative (e.g. 19?? becomes
-        1900) and elsewhere (month, day) with 0
+        1999) and elsewhere (month, day) with 0
+
+        @return: float.
         '''
         if not self.year: return None
         out = float(self.year.replace('?', '9'))
@@ -173,11 +140,31 @@ class FlexiDate(object):
                 out += float(self.day.replace('?', '0')) / 365.0
         return out
 
-# TODO: support for quarters e.g. Q4 1980 or 1954 Q3
-# TODO: support latin stuff like M.DCC.LIII  
-# TODO: convert '-' to '?' when used that way
-# e.g. had this date [181-]
+    def as_datetime(self):
+        '''Get as python datetime.datetime.
+
+        Require year to be a valid datetime year. Default month and day to 1 if
+        do not exist.
+
+        @return: datetime.datetime object.
+        '''
+        year = int(self.year)
+        month = int(self.month) if self.month else 1
+        day = int(self.day) if self.day else 1
+        return datetime.datetime(year, month, day)
+
+
 def parse(date):
+    '''Parse a `date` into a `FlexiDate`.
+
+    @param date: the date to parse - may be a string, datetime.date,
+    datetime.datetime or FlexiDate.
+
+    TODO: support for quarters e.g. Q4 1980 or 1954 Q3
+    TODO: support latin stuff like M.DCC.LIII  
+    TODO: convert '-' to '?' when used that way
+        e.g. had this date [181-]
+    '''
     if not date:
         return None
     if isinstance(date, FlexiDate):

@@ -73,6 +73,14 @@ class TestFlexiDate(object):
         fd = FlexiDate(-1000)
         assert fd.as_float() == float(-1000)
 
+    def test_as_datetime(self):
+        fd = FlexiDate(2000)
+        out = fd.as_datetime()
+        assert out == datetime.datetime(2000, 1, 1), out
+        fd = FlexiDate(1760, 1, 2)
+        out = fd.as_datetime()
+        assert out == datetime.datetime(1760,1,2), out
+
 
 class TestDateParsers(object):
     def test_using_datetime(self):
