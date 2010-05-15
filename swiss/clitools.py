@@ -41,11 +41,12 @@ def _main(functions_or_object):
 
     method = args[0]
     if isobject:
-        getattr(functions_or_object, method)()
+        getattr(functions_or_object, method)(*args[1:])
     else:
-        _methods[method]()
+        _methods[method](*args[1:])
 
+__all__ = [ '_main' ]
 
 if __name__ == '__main__':
-    _main()
+    _main(locals())
 
