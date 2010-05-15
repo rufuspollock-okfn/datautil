@@ -3,26 +3,26 @@
 
 The swiss package provides various utilities for working with data:
 
-  * Url caching and scraping
+  * cache: Url caching and scraping
+  * tabular/*: Processing and transforming tabular data to and from various
+    formats including csv, json, google spreadsheets, xls
+  * misc, date: Cleaning up and parsing data especially dates.
+  * id: ID generation and shortenening
+  * clitools.py: Command line tools such as creating optparse object and usage
+    from a module of object.
+  * deliveranceproxy.py: Deliverance proxy helper
 
-    * cache module
-
-  * Processing and transforming tabular data to and from various formats.
-
-    * tabular module
-
-  * Cleaning up and parsing data.
-
-    * misc and date modules
 
 CHANGELOG
 =========
 
-v0.3 2010-03-01
+v0.3 2010-??-??
 ---------------
 
   * Support for google docs spreadsheets as sources for TabularData
   * Improve documentation of date module and add FlexiDate.as_datetime()
+  * New clitools module incorporating existing cli tools
+  * deliveranceproxy.py: Deliverance proxy helper
 
 v0.2 2009-10-23
 ---------------
