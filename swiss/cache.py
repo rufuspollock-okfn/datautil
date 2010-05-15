@@ -66,6 +66,13 @@ class Cache(object):
         '''Deprecated: use cache_path'''
         return self.cache_path(url)
 
+    def stream(self, url):
+        fp = self.cache_path(url)
+        if not os.path.exists(fp):
+            return None
+        else:
+            return open(fp)
+    
     @classmethod
     def basename(self, url):
         scheme, netloc, path, params, query, fragment = urlparse.urlparse(url)
