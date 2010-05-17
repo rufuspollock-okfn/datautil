@@ -31,7 +31,9 @@ class GDocsReaderTextDb(ReaderBase):
         super(GDocsReaderTextDb, self).read(None)
         if self.id_is_name:
             dbs = self.gd_client.GetDatabases(name=self.source)
-            assert len(dbs) >= 1, 'No spreadsheet of that name/id'
+        else:
+            dbs = self.gd_client.GetDatabases(spreadsheet_key=self.source)
+        assert len(dbs) >= 1, 'No spreadsheet of that name/id'
         db = dbs[0]
         table = db.GetTables(name=sheet_name)[0]
         return table
