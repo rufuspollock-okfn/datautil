@@ -41,6 +41,9 @@ class TabularData(object):
         out += self.data[0:10]
         return repr(out)
 
+    def __str__(self):
+        return repr(self)
+
     def __iter__(self):
         return self.data.__iter__()
 
