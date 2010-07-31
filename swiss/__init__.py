@@ -23,6 +23,7 @@ v0.3 2010-??-??
   * Improve documentation of date module and add FlexiDate.as_datetime()
   * New clitools module incorporating existing cli tools
   * deliveranceproxy.py: Deliverance proxy helper
+  * parse/name.py: new (human) name parsing code
 
 v0.2 2009-10-23
 ---------------
