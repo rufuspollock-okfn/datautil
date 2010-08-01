@@ -28,7 +28,7 @@ def _main(functions_or_object):
     '''
     usage += '\n    '.join(
         [ '%s: %s' % (name, m.__doc__.split('\n')[0] if m.__doc__ else '') for (name,m)
-        in _methods.items() ])
+        in sorted(_methods.items()) ])
     parser = optparse.OptionParser(usage)
     # Optional: for a config file
     # parser.add_option('-c', '--config', dest='config',
