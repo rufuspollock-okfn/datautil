@@ -16,13 +16,14 @@ The swiss package provides various utilities for working with data:
 CHANGELOG
 =========
 
-v0.3 2010-??-??
+v0.3 2010-08-01
 ---------------
 
   * Support for google docs spreadsheets as sources for TabularData
   * Improve documentation of date module and add FlexiDate.as_datetime()
   * New clitools module incorporating existing cli tools
-  * deliveranceproxy.py: Deliverance proxy helper
+  * deliveranceproxy.py: Deliverance proxy helper for proxying to remote
+    websites and retheming with deliverance.
   * parse/name.py: new (human) name parsing code
 
 v0.2 2009-10-23
@@ -45,7 +46,7 @@ v0.1 2009-06-03
     and associated utilities (such as pivot_table)
   * Cleaning and parsing data especially dates (misc and date modules)
 '''
-__version__ = '0.3a'
+__version__ = '0.3'
 
 import tabular
 from cache import *
