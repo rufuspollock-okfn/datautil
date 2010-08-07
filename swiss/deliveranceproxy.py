@@ -1,4 +1,6 @@
-'''Use deliverance for proxying and re-theming.
+'''Use deliverance_ for proxying and re-theming.
+
+.. _deliverance: http://packages.python.org/Deliverance/
 
 Usage requirements (in pip-requirements.txt format)::
 
@@ -14,7 +16,9 @@ Example usage::
 
     dest = 'http://myremotes.ite/'
     mytheme = '<html>....</html>'
-    my_deliverance_rules = '/my/path/to/rules.xml'
+    my_deliverance_rules = '<ruleset><theme href="%s" /> ...</ruleset>'
+    # or
+    # my_deliverance_rules = open('/my/path/to/rules.xml').read()
     deliverance_proxy = create_deliverance_proxy(mytheme, dest,
         my_deliverance_rules)
 
@@ -34,7 +38,6 @@ from deliverance.middleware import DeliveranceMiddleware, SubrequestRuleGetter
 from deliverance.log import PrintingLogger
 
 
-default_theme_url = '/_deliverance_theme.html'
 default_deliverance_rules = \
 '''<ruleset>
   <theme href="%s" />
@@ -50,32 +53,32 @@ default_deliverance_rules = \
     -->
   </rule>
 </ruleset>
-''' % default_theme_url
+'''
 
-
-def create_deliverance_proxy(proxy_base_url, theme_html, rules_path=None,
-        theme_url=default_theme_url):
+def create_deliverance_proxy(proxy_base_url, theme_html, rules_xml=None):
     '''Proxy to another url with re-theming using deliverance.
 
     Based on http://rufuspollock.org/code/deliverance
 
     :param proxy_base_url: base destination url we are proxying to.
     :param theme_html: string providing html theme to use for re-themeing.
-    :param rules_path: (optional) path to deliverance rules file. If not
-        provided use `default_deliverance_rules`
-    :param theme_url: theme url from which to source theme. Normally created
-        for you internally if you provide theme_html. Must be consistent with
-        theme url set in rules file.
+    :param rules_xml: (optional) deliverance rules xml as a string. If not
+        provided use `default_deliverance_rules`. For info on rulesets see
+        deliverance docs. We require that ruleset support a single
+        substitution string '%s' which is used to insert internal mountpoint
+        for the them ('/_deliverance_theme.html').
     '''
+    theme_url = '/_deliverance_theme.html'
     # use a urlmap so we can mount theme and urlset
     app = paste.urlmap.URLMap()
     # set up theme consistent with our rules file
     app[theme_url] = Response(theme_html)
 
-    if rules_path:
-        rules = open(rules_path).read()
+    if rules_xml:
+        rules = rules_xml
     else:
         rules = default_deliverance_rules
+    rules = rules % theme_url
     app['/_deliverance_rules.xml'] = Response(rules, content_type="application/xml")
 
     class MyProxy(object):
