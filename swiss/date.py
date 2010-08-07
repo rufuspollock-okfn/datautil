@@ -204,6 +204,7 @@ except:
     dateutil_parser = None
 
 class DateutilDateParser(DateParserBase):
+    _numeric = re.compile("^[0-9]+$")
     def parse(self, date):
         qualifiers = []
         if dateutil_parser is None:
@@ -255,7 +256,7 @@ class DateutilDateParser(DateParserBase):
         # it '86' -> '1986'. So strip off the '19'. (If the date specified
         # day/month then a two digit year is more likely to be this century
         # and so allow the '19' prefix to it.)
-        elif len(date) == 2 or date.startswith('00'):
+        elif self._numeric.match(date) and (len(date) == 2 or date.startswith('00')):
             year = res.year % 100
         else:
             year = res.year
