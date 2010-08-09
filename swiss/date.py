@@ -231,6 +231,12 @@ class DateutilDateParser(DateParserBase):
             qualifiers.append("Note 'circa'")
             date = ''.join(circa_match.groups())
 
+        # deal with p1980 (what does this mean? it can appear in
+        # field 008 of MARC records
+        p_match = re.match("^p(\d+)$", date)
+        if p_match:
+            date = date[1:]
+
         # Deal with uncertainty: '1985?'
         uncertainty_match = re.match('([0-9xX]{4})\?', date)
         if uncertainty_match:

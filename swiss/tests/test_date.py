@@ -184,4 +184,8 @@ class TestDateParsers(object):
         assert str(fd) == '0023', fd
         assert fd.as_float() == 23, fd.as_float()
 
+    def test_years_with_alpha_prefix(self):
+        in1 = "p1980"
+        fd = parse(in1)
+        assert str(fd) == "1980", fd
         
