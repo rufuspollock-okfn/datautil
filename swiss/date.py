@@ -233,7 +233,7 @@ class DateutilDateParser(DateParserBase):
 
         # deal with p1980 (what does this mean? it can appear in
         # field 008 of MARC records
-        p_match = re.match("^p(\d+)$", date)
+        p_match = re.match("^p(\d+)", date)
         if p_match:
             date = date[1:]
 
