@@ -145,6 +145,14 @@ class TestDateParsers(object):
         fd = parse(1966)
         assert str(fd) == '1966'
 
+        fd = parse('22/07/2010')
+        assert fd.month == '07', fd.month
+
+    def test_parse_ambiguous_day_month(self):
+        fd = parse('05/07/2010')
+        assert fd.month == '07', fd.month
+        assert fd.day == '05', fd.month
+
     def test_parse_with_none(self):
         d1 = parse(None)
         assert d1 is None

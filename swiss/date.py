@@ -154,7 +154,7 @@ class FlexiDate(object):
         return datetime.datetime(year, month, day)
 
 
-def parse(date):
+def parse(date, dayfirst=True):
     '''Parse a `date` into a `FlexiDate`.
 
     @param date: the date to parse - may be a string, datetime.date,
@@ -176,7 +176,7 @@ def parse(date):
         return parser.parse(date)
     else: # assuming its a string
         parser = DateutilDateParser()
-        out = parser.parse(date)
+        out = parser.parse(date, **{'dayfirst': dayfirst})
         if out is not None:
             return out
         # msg = 'Unable to parse %s' % date
@@ -205,7 +205,10 @@ except:
 
 class DateutilDateParser(DateParserBase):
     _numeric = re.compile("^[0-9]+$")
-    def parse(self, date):
+    def parse(self, date, **kwargs):
+        '''
+        :param **kwargs: any kwargs accepted by dateutil.parse function.
+        '''
         qualifiers = []
         if dateutil_parser is None:
             return None
@@ -246,7 +249,7 @@ class DateutilDateParser(DateParserBase):
 
         # Parse the numbers intelligently
         # do not use std parser function as creates lots of default data
-        res = dateutil_parser._parse(date)
+        res = dateutil_parser._parse(date, **kwargs)
 
         if res is None:
             # Couldn't parse it
