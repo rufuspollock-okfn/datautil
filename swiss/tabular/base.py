@@ -153,13 +153,14 @@ class CsvReader(ReaderBase):
     > <http://docs.python.org/lib/module-csv.html>
     """
 
-    def read(self, filepath_or_fileobj=None, encoding=None):
+    def read(self, filepath_or_fileobj=None, encoding=None, **kwargs):
         """Read in a csv file and return a TabularData object.
 
         @param fileobj: file like object.
         @param encoding: if set use this instead of default encoding set in
             __init__ to decode the file like object. NB: will check if fileobj
             already in unicode in which case this is ignored.
+        @param kwargs: all further kwargs are passed to the underlying `csv.reader` function
         @return tabular data object (all values encoded as utf-8).
         """
         super(CsvReader, self).read(filepath_or_fileobj)
@@ -179,7 +180,13 @@ class CsvReader(ReaderBase):
         hasHeader = sniffer.has_header(sample)
 
         self.fileobj.seek(0)
-        reader = csv.reader(encoded_fo, skipinitialspace=True)
+        ourkwargs = {
+            'skipinitialspace': True
+        }
+        if kwargs:
+            ourkwargs.update(kwargs)
+
+        reader = csv.reader(encoded_fo, **ourkwargs)
         if hasHeader:
             tabData.header = reader.next()
         for row in reader:
