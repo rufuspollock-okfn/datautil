@@ -78,7 +78,8 @@ class Cache(object):
         scheme, netloc, path, params, query, fragment = urlparse.urlparse(url)
         result = path.split('/')[-1]
         if query:
-            result += '?' + query
+            # escape '/' as otherwise path problems
+            result += '?' + query.replace('/', '%47')
         return result
 
     @classmethod

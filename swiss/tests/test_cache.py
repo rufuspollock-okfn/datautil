@@ -30,6 +30,10 @@ class TestCache:
         out = Cache.basename(in3)
         assert out == 'membersDo?body=ABC', out
 
+        in3 = base + 'membersDo?body=data/ABC'
+        out = Cache.basename(in3)
+        assert out == 'membersDo?body=data%47ABC', out
+
     def test_filepath(self):
         r = Cache()
         base = 'http://www.abc.org/'
