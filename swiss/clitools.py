@@ -1,3 +1,15 @@
+'''Expose methods or functions as commands on the command line
+
+Example usage::
+
+    # in your code
+    from swiss.clitools import _main
+    if __name__  == '__main__':
+        # expose everything in current module
+        _main(locals())
+        # or if you have an object MyObject with methods you want to expose
+        _main(MyObject)
+'''
 import os
 import sys
 import optparse
@@ -25,6 +37,7 @@ def _main(functions_or_object):
 
     usage = '''%prog {action}
 
+Actions:
     '''
     usage += '\n    '.join(
         [ '%s: %s' % (name, m.__doc__.split('\n')[0] if m.__doc__ else '') for (name,m)
@@ -41,7 +54,7 @@ def _main(functions_or_object):
 
     method = args[0]
     if isobject:
-        getattr(functions_or_object, method)(*args[1:])
+        getattr(functions_or_object(), method)(*args[1:])
     else:
         _methods[method](*args[1:])
 
