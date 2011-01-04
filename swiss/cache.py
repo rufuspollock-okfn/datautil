@@ -16,6 +16,8 @@ class _Progress(object):
         self.count = -1
 
     def dl_progress(self, count, block_size, total_size):
+        if total_size == 0: # total_size is weird so return to avoid errors
+            return
         if self.count == -1:
             print 'Total size: %s' % self.format_size(total_size)
         last_percent = int(self.count*block_size*100/total_size)
