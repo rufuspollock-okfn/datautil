@@ -51,11 +51,13 @@ class Cache(object):
         if not os.path.exists(self.path):
             os.makedirs(path)
 
-    def retrieve(self, url, force=False):
-        '''Retrieve url into cache and return the local path to it.'''
+    def retrieve(self, url, overwrite=False):
+        '''Retrieve url into cache and return the local path to it.
+       
+        :param url: url to retrieve.
+        '''
         dest = self.cache_path(url)
-        if not os.path.exists(dest) or force:
-            self.download(url, dest)
+        self.download(url, dest, overwrite)
         return dest
 
     def cache_path(self, url):
@@ -85,14 +87,20 @@ class Cache(object):
         return result
 
     @classmethod
-    def download(self, url, dest=None):
+    def download(self, url, dest, overwrite=False):
         '''Download a file from a url.
+
+        :param url: the source url
+        :param dest: the destination path to save to.
+        :param overwrite: overwrite destination file if it exists (defaults to
+            False).
         '''
-        if not dest:
-            dest = self.basename(url)
-        print 'Retrieving %s' % url 
-        prog = _Progress()
-        urllib.urlretrieve(url, dest, reporthook=prog.dl_progress)
+        if not os.path.exists(dest) or overwrite:
+            print 'Retrieving %s' % url 
+            prog = _Progress()
+            urllib.urlretrieve(url, dest, reporthook=prog.dl_progress)
+        else:
+            print 'Skipping download as dest already exists: %s' % url
 
     # for backwards compatability
     @classmethod
