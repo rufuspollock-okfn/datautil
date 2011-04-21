@@ -16,7 +16,12 @@ The datautil package provides various utilities for working with data:
 CHANGELOG
 =========
 
-v0.4 2011-??-??
+v0.5 2011-??-??
+---------------
+
+  * Minor improvements to cache
+
+v0.4 2011-01-05
 ---------------
 
   * Rename swiss to datautil
