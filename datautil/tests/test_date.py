@@ -134,6 +134,14 @@ class TestDateParsers(object):
         fd = parser.parse(in1)
         assert str(fd) == '-0004', fd
 
+        in1 = 'Wed, 06 Jan 2010 09:30:00 GMT'
+        fd = parser.parse(in1)
+        assert str(fd) == '2010-01-06', fd
+
+        in1 = 'Tue, 07 Dec 2010 10:00:00 GMT'
+        fd = parser.parse(in1)
+        assert str(fd) == '2010-12-07', fd
+
     def test_parse(self):
         d1 = datetime.datetime(2000, 1, 23)
         fd = parse(d1)
