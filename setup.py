@@ -15,9 +15,12 @@ setup(
     url='http://okfn.org/projects/datautil/',
     download_url='http://bitbucket.org/okfn/datautil/',
     install_requires=[
-        'python-dateutil>=1.0',
+        # python-dateutil 2.0 has different _parse method, so stick to 1.4.1
+        'python-dateutil>=1.0,<1.99',
         # (optional) for excel handling
         # xlrd
+        # (optional) for google docs handling
+        # gdata
         ],
     packages=find_packages(),
     include_package_data=True,

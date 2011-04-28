@@ -12,7 +12,17 @@ Open source software licensed under the MIT license.
   
     $ easy_install swiss
 
-   OR install from the source obtaintable from the mercurial repository:
+   OR install from the source obtainable from the mercurial repository:
 
-    $ hg clone https://knowledgeforge.net/okfn/swiss
- 
+    $ hg clone https://bitbucket.org/okfn/datauti
+  
+## Tests
+
+1. Ensure you also have install 'xlrd' and 'gdata' (options mentioned 
+   in setup.py) and nose (for running tests):
+
+    $ easy_install nose xlrd gdata
+
+2. Run the tests:
+
+    $ nosetests datautil/tests/

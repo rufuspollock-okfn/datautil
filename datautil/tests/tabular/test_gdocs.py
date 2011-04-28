@@ -2,12 +2,13 @@ import os
 from ConfigParser import SafeConfigParser
 
 import datautil.tabular.gdocs as gdocs
+from nose.plugins.skip import SkipTest
 
 
 cfg = SafeConfigParser()
 if not os.path.exists('test.ini'):
-    msg = 'To run these tests you need a config file. See this file for details'
-    raise Exception(msg)
+    msg = 'To run GDocs tests you need a config file. See %s for details' % __file__
+    raise SkipTest(msg)
 cfg.readfp(open('test.ini'))
 username = cfg.get('gdocs', 'username')
 password = cfg.get('gdocs', 'password')
