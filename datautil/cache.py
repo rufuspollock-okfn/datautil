@@ -95,8 +95,9 @@ class Cache(object):
         :param overwrite: overwrite destination file if it exists (defaults to
             False).
         '''
+        url = url.encode('utf-8')
         if not os.path.exists(dest) or overwrite:
-            print 'Retrieving %s' % url 
+            print 'Retrieving %s' % url
             prog = _Progress()
             urllib.urlretrieve(url, dest, reporthook=prog.dl_progress)
         else:

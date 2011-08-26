@@ -31,15 +31,23 @@ class Normalizer(object):
         return item in self.keys()
 
     def get(self, key, source_hint=None):
+        if key is None:
+            return {}
+        record = self.lookup(key)
+        if record:
+            return record
+        return self.add(_transform_key(key), source_hint).content
+    
+    def lookup(self, key):
         if key is None: 
             return {}
-        key = _transform_key(key)
+        local_key = _transform_key(unicode(key))
         for record in self.records: 
             # TODO #1: figure out FindRecords syntax
             # TODO #2: fuzzy matching for longer keys
-            if record.get(self.key_row) == key:
+            if record.get(self.key_row) == local_key:
                 return record
-        return self.add(key, source_hint).content
+
 
     def add(self, value, source_hint):
         fields = self.table.fields
@@ -60,7 +68,7 @@ class NormalizerJoin(object):
         if key in self.second:
             return self.second.get(key)
         data = self.first.get(key, source_hint=source_hint)
-        if self.second.key_row in data: 
+        if self.second.key_row in data:
             data.update(self.second.get(data.get(self.second.key_row)))
         return data
     
