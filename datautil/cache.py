@@ -55,6 +55,7 @@ class Cache(object):
         '''Retrieve url into cache and return the local path to it.
        
         :param url: url to retrieve.
+        :return: path to file retrieved.
         '''
         dest = self.cache_path(url)
         self.download(url, dest, overwrite)
