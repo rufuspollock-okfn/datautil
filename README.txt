@@ -10,11 +10,11 @@ Open source software licensed under the MIT license.
 
 2. Either install directy from PyPI usinging easy_install:
   
-    $ easy_install swiss
+    $ easy_install datautil
 
    OR install from the source obtainable from the mercurial repository:
 
-    $ hg clone https://bitbucket.org/okfn/datauti
+    $ hg clone https://github.com/okfn/datautil
   
 ## Tests
 
