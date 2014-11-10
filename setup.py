@@ -13,7 +13,7 @@ setup(
     author='Open Knowledge Foundation',
     author_email='info@okfn.org',
     url='http://okfn.org/projects/datautil/',
-    download_url='http://bitbucket.org/okfn/datautil/',
+    download_url='https://github.com/okfn/datautil/',
     install_requires=[
         # python-dateutil 2.0 has different _parse method, so stick to 1.4.1
         'python-dateutil>=1.0,<1.99',
