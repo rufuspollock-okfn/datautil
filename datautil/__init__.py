@@ -58,6 +58,10 @@ v0.1 2009-06-03
 '''
 __version__ = '0.4'
 
+try:
+    import tabular
+except ImportError:
+    tabular = None
 from cache import *
 from misc import *
 from id import *
