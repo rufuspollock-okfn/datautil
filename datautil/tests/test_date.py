@@ -172,17 +172,94 @@ class TestDateParsers(object):
 #        assert fd.as_float() == u'1980', fd.as_float()
 
     def test_parse_with_qualifiers(self):
+
         fd = parse('1985?')
         assert fd.year == u'1985', fd
         assert fd.qualifier == u'Uncertainty : 1985?', fd.qualifier
 
+        #  match '[c|c. |c.] {date}'
         fd = parse('c.1780')
         assert fd.year == u'1780', fd
-        assert fd.qualifier == u"Note 'circa' : c.1780", fd
+        assert fd.qualifier.startswith(u"Note 'circa'"), fd
 
         fd = parse('c. 1780')
         assert fd.year == u'1780', fd
         assert fd.qualifier.startswith(u"Note 'circa'"), fd
+
+        fd = parse('c1780')
+        assert fd.year == '1780', fd
+        assert fd.qualifier == u"Note 'circa' : c1780", fd
+
+        fd = parse('c 1780')
+        assert fd.year == u'1780', fd
+        assert fd.qualifier.startswith(u"Note 'circa'"), fd
+
+        #  match 'circa {date}' | circa{date}'
+        fd = parse('circa1780')
+        assert fd.year == u'1780', fd
+        assert fd.qualifier == u"Note 'circa' : circa1780", fd
+
+        fd = parse('circa 1780')
+        assert fd.year == u'1780', fd
+        assert fd.qualifier.startswith(u"Note 'circa'"), fd
+
+        #  match '[circ|circ. |circ.] {date}'
+        fd = parse('circ1780')
+        assert fd.year == u'1780', fd
+        assert fd.qualifier == u"Note 'circa' : circ1780", fd
+
+        fd = parse('circ 1780')
+        assert fd.year == u'1780', fd
+        assert fd.qualifier.startswith(u"Note 'circa'"), fd
+
+        fd = parse('circ.1780')
+        assert fd.year == u'1780', fd
+        assert fd.qualifier == u"Note 'circa' : circ.1780", fd
+
+        fd = parse('circ. 1780')
+        assert fd.year == u'1780', fd
+        assert fd.qualifier.startswith(u"Note 'circa'"), fd
+
+        #  match '[cca|cca. |cca.] {date}'
+        fd = parse('cca1780')
+        assert fd.year == u'1780', fd
+        assert fd.qualifier == u"Note 'circa' : cca1780", fd
+
+        fd = parse('cca 1780')
+        assert fd.year == u'1780', fd
+        assert fd.qualifier.startswith(u"Note 'circa'"), fd
+
+        fd = parse('cca.1780')
+        assert fd.year == u'1780', fd
+        assert fd.qualifier == u"Note 'circa' : cca.1780", fd
+
+        fd = parse('cca. 1780')
+        assert fd.year == u'1780', fd
+        assert fd.qualifier.startswith(u"Note 'circa'"), fd
+
+        #  match '[ca|ca. |ca.] {date}'
+
+        fd = parse('ca. 1780')
+        assert fd.year == u'1780', fd
+        assert fd.qualifier.startswith(u"Note 'circa'"), fd
+
+        fd = parse('ca. 1780')
+        assert fd.year == u'1780', fd
+        assert fd.qualifier.startswith(u"Note 'circa'"), fd
+
+        fd = parse('ca.1780')
+        assert fd.year == u'1780', fd
+        assert fd.qualifier.startswith(u"Note 'circa'"), fd
+
+        fd = parse('ca.1780')
+        assert fd.year == u'1780', fd
+        assert fd.qualifier.startswith(u"Note 'circa'"), fd
+
+        fd = parse('ca.1780')
+        assert fd.year == u'1780', fd
+        assert fd.qualifier.startswith(u"Note 'circa'"), fd
+
+
 
     def test_ambiguous(self):
         # TODO: have to be careful here ...
@@ -204,4 +281,3 @@ class TestDateParsers(object):
         in1 = "p1980"
         fd = parse(in1)
         assert str(fd) == "1980", fd
-        
